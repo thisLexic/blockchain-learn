@@ -78,6 +78,7 @@ class Blockchain:
 
 # Creates the Web app
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 # Creates the blockchain
 blockchain = Blockchain()
