@@ -1,12 +1,18 @@
-import datetime, hashlib, json
-from flask import Flask, jsonify
+import datetime, hashlib, json, requests
+from flask import Flask, jsonify, request
+from uuid import uuid4
+from urllib.parse import urlparse
+
 
 class Blockchain:
 
     def __init__(self):
         # include length of the chain
+        # transactions is the mempool
         self.chain = []
+        self.transactions = []
         self.create_block(proof=1, previous_hash="0")
+        self.nodes = set()
 
     def create_block(self, proof, previous_hash):
         """
@@ -18,7 +24,9 @@ class Blockchain:
             'time_stamp': str(datetime.datetime.now()),
             'proof': proof,
             'previous_hash': previous_hash,
+            'transactions': self.transactions,
         }
+        self.transactions = []
         self.chain.append(block)
         return block
 
@@ -75,6 +83,43 @@ class Blockchain:
             previous_block = block
             block_index += 1
         return True
+
+    def add_transaction(self, sender, receiver, amount):
+        self.transactions.append({
+                'sender': sender,
+                'receiver': receiver,
+                'amount': amount,
+            })
+        # returns the index of the new block to be added
+        previous_block = self.get_previous_block()
+        return previous_block['index'] + 1
+
+    def add_node(self, address):
+        """
+        address = 'http://127.0.0.1:5000/'
+        parsed_url = parced address
+        parsed_url.netloc = '127.0.0.1:5000'
+        """
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
+
+    def replace_chain(self):
+        network = self.nodes
+        longest_chain = None
+        max_length = len(self.chain)
+        for node in network:
+            response = requests.get(f'https://{node}/get_chain')
+            if response.status_code == 200:
+                length = response.json()['length']
+                chain = response.json()['chain']
+                if length > max_length and self.is_chain_valid(chain):
+                    max_length = length
+                    longest_chain = chain
+        if longest_chain:
+            self.chain = longest_chain
+            return True
+        return False
+
 
 # Creates the Web app
 app = Flask(__name__)
