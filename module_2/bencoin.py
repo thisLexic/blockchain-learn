@@ -155,7 +155,7 @@ def mine_block():
 # get full blockchain
 @app.route('/get_chain', methods=['GET'])
 def get_chain():
-    resonse = {
+    response = {
         'chain': blockchain.chain,
         'len': len(blockchain.chain),
     }
