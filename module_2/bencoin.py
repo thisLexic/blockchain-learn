@@ -125,6 +125,9 @@ class Blockchain:
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
+# Create address for node in port 5000
+node_address = str(uuid4()).replace('-', '')
+
 # Creates the blockchain
 blockchain = Blockchain()
 
@@ -135,6 +138,8 @@ def mine_block():
     previous_proof = previous_block['proof']
     proof = blockchain.proof_of_work(previous_proof)
     previous_hash = blockchain.hash(previous_block)
+    # Ben mined the block for {node_address} with 1 Ben coin as a transaction fee
+    blockchain.add_transaction(sender=node_address, receiver='Ben', amount=1)
     block = blockchain.create_block(proof, previous_hash)
     response = {
         'message': 'Congratulations, you just mined a block!',
@@ -142,6 +147,7 @@ def mine_block():
         'time_stamp': block['time_stamp'],
         'proof': block['proof'],
         'previous_hash': block['previous_hash'],
+        'transactions': block['transactions'],
     }
     return jsonify(response), 200
 
@@ -163,7 +169,19 @@ def is_valid():
     }
     return jsonify(response), 200
 
-
+# add a new trasaction to the blockchain
+@app.route('/add_transaction', methods=['POST'])
+def add_transaction():
+    json = request.get_json()
+    transaction_keys = ['sender', 'receiver', 'amount']
+    if not all(key in json for key in transaction_keys):
+        return 'Some keys in the json are missing', 400
+    # For demo purposes theres no signature but in application there is
+    index = blockchain.add_transaction(json['sender'], json['receiver'], json['amount'])
+    response = {
+        'message': f'This transaction will be added to Block {index}',
+    }
+    return jsonify(response), 201
 
 
 app.run(host='0.0.0.0', port=5000)
