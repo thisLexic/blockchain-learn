@@ -126,7 +126,7 @@ class Blockchain:
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
-# Create address for node in port 5000 (where the reward for mining comes from)
+# Create address for node in port 5000
 node_address = str(uuid4()).replace('-', '')
 
 # Creates the blockchain
@@ -139,8 +139,8 @@ def mine_block():
     previous_proof = previous_block['proof']
     proof = blockchain.proof_of_work(previous_proof)
     previous_hash = blockchain.hash(previous_block)
-    # Ben mined the block for {node_address} with 1 Ben coin as a reward
-    blockchain.add_transaction(sender=node_address, receiver='Ben', amount=1)
+    # Kaloy mined the block for {node_address} with 1 Ben coin as a reward
+    blockchain.add_transaction(sender=node_address, receiver='Kaloy', amount=1)
     block = blockchain.create_block(proof, previous_hash)
     response = {
         'message': 'Congratulations, you just mined a block!',
@@ -216,4 +216,4 @@ def replace_chain():
     return jsonify(response), 200
 
 
-app.run(host='0.0.0.0', port=5000)
+app.run(host='0.0.0.0', port=5002)

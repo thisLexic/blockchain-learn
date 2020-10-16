@@ -126,7 +126,7 @@ class Blockchain:
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
-# Create address for node in port 5000 (where the reward for mining comes from)
+# Create address for node in port 5000
 node_address = str(uuid4()).replace('-', '')
 
 # Creates the blockchain
@@ -216,4 +216,4 @@ def replace_chain():
     return jsonify(response), 200
 
 
-app.run(host='0.0.0.0', port=5000)
+app.run(host='0.0.0.0', port=5001)
