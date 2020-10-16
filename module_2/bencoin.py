@@ -104,6 +104,7 @@ class Blockchain:
         self.nodes.add(parsed_url.netloc)
 
     def replace_chain(self):
+        # find the chain in the network that is the longest and also valid
         network = self.nodes
         longest_chain = None
         max_length = len(self.chain)
@@ -169,7 +170,7 @@ def is_valid():
     }
     return jsonify(response), 200
 
-# add a new trasaction to the blockchain
+# add a new trasaction to the block
 @app.route('/add_transaction', methods=['POST'])
 def add_transaction():
     json = request.get_json()
@@ -180,6 +181,21 @@ def add_transaction():
     index = blockchain.add_transaction(json['sender'], json['receiver'], json['amount'])
     response = {
         'message': f'This transaction will be added to Block {index}',
+    }
+    return jsonify(response), 201
+
+# add new node/s to the network
+@app.route('/connect_node', methods=['POST'])
+def connect_node():
+    json = request.get_json()
+    nodes = json.get('nodes')
+    if nodes is None:
+        return "No node provided", 400
+    for node in nodes:
+        blockchain.add_node(node)
+    response = {
+        'message': 'Nodes have been successfully added to the network',
+        'total_nodes': list(blockchain.nodes),
     }
     return jsonify(response), 201
 
