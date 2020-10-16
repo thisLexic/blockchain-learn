@@ -8,7 +8,7 @@ class Blockchain:
 
     def __init__(self):
         # include length of the chain
-        # transactions is the mempool
+        # the transactions here is the mempool
         self.chain = []
         self.transactions = []
         self.create_block(proof=1, previous_hash="0")
@@ -87,6 +87,11 @@ class Blockchain:
         return True
 
     def add_transaction(self, sender, receiver, amount):
+        """
+        Only for demo purposes
+        Does not actually add transactions the proper way
+        Does not use UTXOs
+        """
         self.transactions.append({
                 'sender': sender,
                 'receiver': receiver,
