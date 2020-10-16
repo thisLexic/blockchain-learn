@@ -144,7 +144,7 @@ def mine_block():
     block = blockchain.create_block(proof, previous_hash)
     response = {
         'message': 'Congratulations, you just mined a block!',
-        'index': blockchain['index'],
+        'index': block['index'],
         'time_stamp': block['time_stamp'],
         'proof': block['proof'],
         'previous_hash': block['previous_hash'],

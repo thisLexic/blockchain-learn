@@ -21,6 +21,8 @@ class Blockchain:
         block = {
             # include current hash
             'index': len(self.chain) + 1,
+            # time_stamp will initially be different for other nodes for demo purposes
+            # it will be corrected after the consensus protocol
             'time_stamp': str(datetime.datetime.now()),
             'proof': proof,
             'previous_hash': previous_hash,
@@ -144,7 +146,7 @@ def mine_block():
     block = blockchain.create_block(proof, previous_hash)
     response = {
         'message': 'Congratulations, you just mined a block!',
-        'index': blockchain['index'],
+        'index': block['index'],
         'time_stamp': block['time_stamp'],
         'proof': block['proof'],
         'previous_hash': block['previous_hash'],
@@ -185,6 +187,7 @@ def add_transaction():
     return jsonify(response), 201
 
 # add new node/s to the network
+# this is done per node in the demo
 @app.route('/connect_node', methods=['POST'])
 def connect_node():
     json = request.get_json()
