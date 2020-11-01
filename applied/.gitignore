@@ -2,6 +2,11 @@ Vagrantfile
 temp.*
 2xUpdate.md
 network
-gocc
 app
+.cache
+bin
+pkg
+github.com
+golang.org
+google.golang.org
 .vagrant

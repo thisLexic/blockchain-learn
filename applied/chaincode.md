@@ -55,8 +55,11 @@ State Management
 	PutState(key string, value []byte) error
 	GetState(key string) ([]byte, error)
 	DelState(key string) error
+	GetStateByRange(startKey, endKey string) (StateQueryIteratorInterface, error)
+	GetStateByRangeWithPagination(startKey, endKey string, pageSize int32, bookmark string) (StateQueryIteratorInterface, *peer.QueryResponseMetadata, error)
 
 Private State Management - must be set with PDC
 	PutPrivateData(PDCname string, key string, value []byte) error
 	GetPrivateData(PDCname string, key string) ([]byte, error)
 	DelPrivateData(PDCname string, key string) error
+	GetStateByRange(PDCname string, startKey, endKey string) (StateQueryIteratorInterface, error)
