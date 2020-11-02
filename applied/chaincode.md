@@ -63,3 +63,26 @@ Private State Management - must be set with PDC
 	GetPrivateData(PDCname string, key string) ([]byte, error)
 	DelPrivateData(PDCname string, key string) error
 	GetStateByRange(PDCname string, startKey, endKey string) (StateQueryIteratorInterface, error)
+
+Composite
+	CreateCompositeKey(objectType string, atts []string) (string, error)
+	SplitCompositeKey(compositeKey string) (string, []string, error)
+	GetStateByPartialCompositeKey(objectType string, keys []string) (StateQueryIteratorInterface, error)
+	GetStateByPartialCompositeKeyWithPagination(objectType string, keys []string, pageSize int32, bookmark string) (StateQueryIteratorInterface, *pb.QueryResponseMetadata, error)
+
+	GetPrivateDataByPartialCompositeKey(PDCName, objectType string, keys []string) (StateQueryIteratorInterface, error)
+
+Rich Queries (requires data to be modeled in JSON; peers must use CouchDB; Do NOT use for Update Transactions)
+	GetQueryResult(query string) () (StateQueryIteratorInterface, error)
+	GetQueryResultWithPagination(query string, pageSize int32, bookmark string) (StateQueryIteratorInterface, *pb.QueryResponseMetadata, error)
+	GetPrivateDataQueryResult(PDCName, query string) (StateQueryIteratorInterface, error)
+
+History (managed on a per peer basis; peers are configured to update/create history logs; peer manages on a per chaincode/asset basis; managed in GoLevelDB; NOT recommended for update transactions)
+	GetHistoryForKey(key string) (HistoryQueryIteratorInterface, error)
+
+Access Control List
+	GetID(stub ChaincodeStubInterface) (string, error)
+	GetMSPID(stub ChaincodeStubInterface) (string, error)
+	GetAttributeValue(stub ChaincodeStubInterface, attrName string) (value string, found bool, err error)
+	AssertAttributeValue(stub ChaincodeStubInterface, attrName, attrValue string) error
+	GetX509Certificate() (*x509.Certificate, error)
